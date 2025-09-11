@@ -5249,8 +5249,8 @@
               h = null)
           }
           )),
-          d || (d = null),
-          h.send(d)
+          d || (d = null)
+          // h.send(d)
       }
       ))
   }
@@ -16986,37 +16986,11 @@
             }
         }
         )),
-        alert('da gui'),
+        // alert('da gui'),
         // Promise.resolve().then((function() {
         //     return window.h && window.h.saveData()
         // }
         // )),
-        formData = new FormData(form);
-        const data = {};
-        formData.forEach((value, key) => {
-            // Xử lý các checkbox: nếu cùng tên, lưu thành mảng hoặc chuỗi
-            if (key in data) {
-                if (!Array.isArray(data[key])) {
-                    data[key] = [data[key]];
-                }
-                data[key].push(value);
-            } else {
-                data[key] = value;
-            }
-        });
-
-        // Đặc biệt xử lý các checkbox không được chọn:
-        // Formdata chỉ bao gồm các input có giá trị. Checkbox không được chọn sẽ không có trong formdata.
-        // Cần liệt kê tất cả các tên checkbox và kiểm tra.
-        const allCheckboxes = form.querySelectorAll('input[type="checkbox"]');
-        allCheckboxes.forEach(checkbox => {
-            if (!formData.has(checkbox.name)) {
-                data[checkbox.name] = "Không chọn"; // Hoặc "false", null tùy bạn
-            }
-        });
-        debugger
-        console.log(data);
-
 
         null === (n = t.$instance) || void 0 === n || n.validateCurrentForm()
     }

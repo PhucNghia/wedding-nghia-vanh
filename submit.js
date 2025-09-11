@@ -1,64 +1,75 @@
-// document.addEventListener('DOMContentLoaded', function() {
-//     const form = document.getElementById('4qa66ho3'); // Lấy form bằng ID
-//     const submitButtonDiv = document.getElementById('w-g5roin98'); // Lấy div chứa nút GỬI NGAY
-//     const submitButtonText = submitButtonDiv.querySelector('.button-text span'); // Lấy span chứa chữ GỬI NGAY
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('4qa66ho3'); // Lấy form bằng ID của bạn
+    const submitButtonDiv = document.getElementById('w-g5roin98'); // Lấy div chứa nút GỬI NGAY
+    const submitButtonText = submitButtonDiv.querySelector('.button-text span'); // Lấy span chứa chữ GỬI NGAY
 
-//     form.addEventListener('submit', function(event) {
-//         event.preventDefault(); // Ngăn chặn hành vi gửi form mặc định
+    // Lưu trữ hàm saveData gốc nếu nó tồn tại để gọi sau nếu cần
+    // Hoặc ghi đè nó hoàn toàn nếu bạn muốn kiểm soát việc gửi dữ liệu
+    const originalSaveData = window.h && window.h.saveData ? window.h.saveData : null;
 
-//         submitButtonText.textContent = 'ĐANG GỬI...'; // Thay đổi trạng thái nút
-//         submitButtonDiv.classList.add('loading'); // Thêm class để hiển thị loader (nếu có CSS cho nó)
+    form.addEventListener('submit', async function(event) {
 
-//         const formData = new FormData(form);
-//         const data = {};
-//         formData.forEach((value, key) => {
-//             // Xử lý các checkbox: nếu cùng tên, lưu thành mảng hoặc chuỗi
-//             if (key in data) {
-//                 if (!Array.isArray(data[key])) {
-//                     data[key] = [data[key]];
-//                 }
-//                 data[key].push(value);
-//             } else {
-//                 data[key] = value;
-//             }
-//         });
+        event.preventDefault(); // Rất quan trọng: Ngăn chặn form gửi dữ liệu theo cách mặc định
+        submitButtonText.textContent = 'ĐANG GỬI...';
+        submitButtonDiv.classList.add('loading'); // Thêm class để hiển thị loader
 
-//         // Đặc biệt xử lý các checkbox không được chọn:
-//         // Formdata chỉ bao gồm các input có giá trị. Checkbox không được chọn sẽ không có trong formdata.
-//         // Cần liệt kê tất cả các tên checkbox và kiểm tra.
-//         const allCheckboxes = form.querySelectorAll('input[type="checkbox"]');
-//         allCheckboxes.forEach(checkbox => {
-//             if (!formData.has(checkbox.name)) {
-//                 data[checkbox.name] = "Không chọn"; // Hoặc "false", null tùy bạn
-//             }
-//         });
+        const formData = new FormData(form);
+        const data = {};
+        formData.forEach((value, key) => {
+            // Xử lý các trường input đã có trong form
+            if (key in data) {
+                if (!Array.isArray(data[key])) {
+                    data[key] = [data[key]];
+                }
+                data[key].push(value);
+            } else {
+                data[key] = value;
+            }
+        });
 
-//         // Thay thế 'YOUR_API_GATEWAY_ENDPOINT' bằng URL bạn sẽ nhận được từ API Gateway sau này
-//         fetch('YOUR_API_GATEWAY_ENDPOINT', {
-//             method: 'POST',
-//             headers: {
-//                 'Content-Type': 'application/json',
-//             },
-//             body: JSON.stringify(data),
-//         })
-//         .then(response => {
-//             if (!response.ok) {
-//                 return response.json().then(err => { throw new Error(err.message || 'Lỗi mạng hoặc server không phản hồi tốt.') });
-//             }
-//             return response.json();
-//         })
-//         .then(result => {
-//             console.log('Success:', result);
-//             alert('Cảm ơn bạn! Thông tin đã được gửi thành công.');
-//             form.reset(); // Reset form sau khi gửi thành công
-//         })
-//         .catch(error => {
-//             console.error('Error:', error);
-//             alert('Đã có lỗi xảy ra khi gửi thông tin. Vui lòng thử lại. Lỗi: ' + error.message);
-//         })
-//         .finally(() => {
-//             submitButtonText.textContent = 'GỬI NGAY'; // Khôi phục trạng thái nút
-//             submitButtonDiv.classList.remove('loading');
-//         });
-//     });
-// });
+        // Xử lý các checkbox không được chọn để gửi giá trị "Không chọn"
+        const allCheckboxes = form.querySelectorAll('input[type="checkbox"]');
+        allCheckboxes.forEach(checkbox => {
+            if (!formData.has(checkbox.name)) {
+                data[checkbox.name] = "Không chọn";
+            }
+        });
+
+        // =================================================================
+        // THAY THẾ 'YOUR_API_GATEWAY_ENDPOINT' bằng URL API Gateway của bạn
+        // =================================================================
+        const apiGatewayEndpoint = 'YOUR_API_GATEWAY_ENDPOINT';
+        url = "https://script.google.com/macros/s/AKfycbysh3qKMYmM7fYmaYsD2eBdhYFEpTIj9U9-FwJN4ST9T1kk8FtLksIL5Z39Xdmvdssv/exec"
+
+        try {
+            fetch(url, {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(data),
+              mode: "no-cors"
+            });
+
+            if(data['full_name'] != "") {
+              alert('Cảm ơn bạn! Thông tin đã được gửi thành công.');
+              form.reset();
+            }
+
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Đã có lỗi xảy ra khi gửi thông tin. Vui lòng thử lại. Lỗi: ' + error.message);
+        } finally {
+            submitButtonText.textContent = 'GỬI NGAY';
+            submitButtonDiv.classList.remove('loading');
+        }
+    });
+
+    // Cần thêm một sự kiện click cho cái div cha 'w-g5roin98'
+    // vì code gốc gán listener cho 'this.vm.$el' mà có thể là div này
+    // hoặc một element bao quanh.
+    // Nếu bạn muốn giữ lại hành vi gốc của WebcakeScript mà không bị trùng lặp,
+    // hãy đảm bảo rằng `event.preventDefault()` của bạn được gọi trước khi
+    // bất kỳ hành vi gửi nào khác (bao gồm cả `window.h.saveData()`) được kích hoạt.
+    // Event listener cho form.submit() sẽ chạy trước các event click trên nút.
+});
