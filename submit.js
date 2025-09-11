@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
     form.addEventListener('submit', async function(event) {
 
         event.preventDefault(); // Rất quan trọng: Ngăn chặn form gửi dữ liệu theo cách mặc định
-        submitButtonText.textContent = 'ĐANG GỬI...';
+        // submitButtonText.textContent = 'ĐANG GỬI...';
         submitButtonDiv.classList.add('loading'); // Thêm class để hiển thị loader
 
         const formData = new FormData(form);
@@ -60,8 +60,8 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('Error:', error);
             alert('Đã có lỗi xảy ra khi gửi thông tin. Vui lòng thử lại. Lỗi: ' + error.message);
         } finally {
-            submitButtonText.textContent = 'GỬI NGAY';
             submitButtonDiv.classList.remove('loading');
+            // submitButtonText.textContent = 'GỬI NGAY';
         }
     });
 
